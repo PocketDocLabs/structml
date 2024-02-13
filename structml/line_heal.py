@@ -1,19 +1,52 @@
 import re
 import torch
 import gc
-from rich.progress import track
+from rich.progress import track, Progress
 import os
-from multiprocessing import pool
+from multiprocessing import Pool, set_start_method
 
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, logging
 
 # This module is used to fix text with excessive newlines and or ending dashes typical of books and fixed width text such as usenet posts.
+
+# Set logging verbosity to error
+logging.set_verbosity_error()
 
 # Default model:
 default_model = "Dans-DiscountModels/Dans-StructureEvaluator-Small"
 
 # Length of fake token (used to estimate the length of the text in tokens)
 fake_token_length = 5
+
+vram_per_instance = 1.8
+
+def get_gpu_vram():
+    # This function returns the available VRAM on the GPU in GB
+
+    # Clear cuda cache
+    torch.cuda.empty_cache()
+
+    # Get total VRAM
+    total_vram = torch.cuda.get_device_properties(0).total_memory
+
+    # Get available VRAM
+    available_vram = total_vram - torch.cuda.memory_reserved(0)
+
+    # Return available VRAM in GB
+    return available_vram / (1024 ** 3)
+
+def calculate_instances(vram_per_instance, safety_margin=0.9):
+    # This function calculates the maximum number of instances of a model that can be loaded onto the GPU based on the available VRAM, the VRAM required per instance, and a safety margin
+
+    # Get available VRAM
+    available_vram = get_gpu_vram()
+
+    # Calculate maximum instances
+    max_instances = int((available_vram * safety_margin) / vram_per_instance)
+
+    # Return maximum instances
+    return max_instances
+
 
 def load_model(model_name=default_model, cuda=True):
     # This function loads a model and tokenizer from Hugging Face's model hub, moves the model to the GPU if available, and returns the model and tokenizer
@@ -217,3 +250,25 @@ def parse_with_model(text, model, tokenizer, verbose=False):
 
     # Return fixed text
     return fixed_text
+
+def parse_list(texts, verbose=False, cuda=True):
+    # This function fixes a list of texts with excessive newlines and or ending dashes typical of books and fixed width text such as usenet posts using multiple processess
+
+    max_instances = calculate_instances(vram_per_instance)
+
+    set_start_method('spawn', force=True)
+
+    with Pool(max_instances) as p:
+        # For each text in the list, fix it with parse(text)
+        if verbose:
+            results = list(track(p.imap(parse, texts), description="Fixing texts", total=len(texts)))
+        else:
+            results = p.map(parse, texts)
+
+    if cuda:
+        torch.cuda.empty_cache()
+
+    gc.collect()
+
+    # Return fixed texts
+    return results
