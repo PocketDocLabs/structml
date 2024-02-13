@@ -18,7 +18,7 @@ default_model = "Dans-DiscountModels/Dans-StructureEvaluator-Small"
 # Length of fake token (used to estimate the length of the text in tokens)
 fake_token_length = 5
 
-vram_per_instance = 1.8
+vram_per_instance = 2
 
 def get_gpu_vram():
     # This function returns the available VRAM on the GPU in GB
