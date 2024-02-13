@@ -217,31 +217,3 @@ def parse_with_model(text, model, tokenizer, verbose=False):
 
     # Return fixed text
     return fixed_text
-
-def parse_list(text_list, verbose=False, cuda=True):
-    # This function fixes a list of texts with excessive newlines and or ending dashes typical of books and fixed width text such as usenet posts
-
-    # Load model and tokenizer
-    model, tokenizer = load_model(cuda=cuda)
-
-    # Initialize list to store fixed texts
-    fixed_texts = []
-
-    # For each text in the list, fix it and append it to the fixed_texts list
-    if verbose:
-        for text in track(text_list, description="Fixing texts", total=len(text_list)):
-            fixed_texts.append(parse(text, verbose=False, cuda=cuda))
-    else:
-        for text in text_list:
-            fixed_texts.append(parse(text, verbose=False, cuda=cuda))
-
-    # Unload model and tokenizer
-    del model, tokenizer
-
-    if cuda:
-        torch.cuda.empty_cache()
-
-    gc.collect()
-
-    # Return fixed texts
-    return fixed_texts
