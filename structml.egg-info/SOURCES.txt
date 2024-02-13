@@ -1,0 +1,10 @@
+LICENSE
+README.md
+pyproject.toml
+setup.py
+structml/__init__.py
+structml/line_heal.py
+structml.egg-info/PKG-INFO
+structml.egg-info/SOURCES.txt
+structml.egg-info/dependency_links.txt
+structml.egg-info/top_level.txt

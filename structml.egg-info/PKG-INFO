@@ -1,0 +1,24 @@
+Metadata-Version: 2.1
+Name: structml
+Version: 0.0.2
+Summary: A package for working with data using NLP and ML.
+Home-page: https://github.com/PocketDocLabs/struct-ml
+Author: PocketDoc Labs
+Author-email: PocketDoc Labs <visuallyadequate@gmail.com>
+Project-URL: Homepage, https://github.com/PocketDocLabs/structml
+Project-URL: Issues, https://github.com/PocketDocLabs/structml/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)
+Classifier: Operating System :: OS Independent
+Classifier: Natural Language :: English
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# structml
+A package for working with data using NLP and ML.
+
+## Installation
+```bash
+pip install structml
+```
