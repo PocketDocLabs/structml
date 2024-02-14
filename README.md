@@ -1,6 +1,7 @@
 # structml
 A package for working with data using NLP and ML.
 
+
 ## Features
 - The primary feature of this package is the `line_heal` module, which provides functions to heal strings of text that have been broken into multiple lines. This is useful for working with data that originates from a structured source, such as a PDF or a web page.
 - Parallel processing for processing multiple strings at once.
@@ -21,6 +22,7 @@ git clone https://github.com/PocketDocLabs/structml.git
 cd structml
 pip install .
 ```
+
 
 ## Usage
 
@@ -55,14 +57,15 @@ healed_line = line_heal.parse(line)
 
 print(healed_line)
 ```
-
 ###### Output
 ```
 This line is broken into multiple lines as is common in data that originates from a structured source.
 
 The goal of this function is to heal the line in a way flows naturally and is easy to read.
 ```
+
 ---
+
 ##### `parse_list`
 **Note**: This function uses large amounts of memory.
 
@@ -96,7 +99,6 @@ healed_lines = line_heal.parse_list(lines)
 for line in healed_lines:
     print(line)
 ```
-
 ###### Output
 ```
 This line is broken into multiple lines as is common in data that originates from a structured source.
@@ -105,11 +107,14 @@ The goal of this function is to heal the line in a way flows naturally and is ea
 Another goal of this function is to do so in a way that is efficient and scalable.
 ```
 
+
 ## Credits
 Thank you to [Sebastian Gabarain](https://huggingface.co/Locutusque) for [the model](https://huggingface.co/Locutusque/TinyMistral-248M-v2.5) that Dans-StructureEvaluator is based on.
 
+
 ## Model pages
 - [Dans-StructureEvaluator](https://huggingface.co/Dans-DiscountModels/Dans-StructureEvaluator-Small), used in the `line_heal` module. Used to check the perplexity of the text with various joining strategies.
+
 
 ## License
 This project is licensed under the terms of the AGPL-3.0 license. The full text of the license can be found in the `LICENSE` file.
