@@ -1,14 +1,15 @@
-[![structml Logo](https://github.com/PocketDocLabs/structml/blob/main/assets/logo/logo_2x_scale.png?raw=true)](https://github.com/PocketDocLabs/structml)
-
+[![structml Logo](https://github.com/PocketDocLabs/structml/blob/main/assets/logo/logo_2x_scale.png?raw=true)]()
 
 # structml
+[![PyPI](https://img.shields.io/pypi/v/structml.svg)](https://pypi.org/project/structml/) [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/structml.svg)](https://pypi.org/project/structml/) [![PyPI - Downloads](https://img.shields.io/pypi/dm/structml)](https://pypistats.org/packages/structml)
+
 **Not ready for production use**
 
 A package for working with data using NLP and ML.
 
 
 ## Features
-- The primary feature of this package is the `line_heal` module, which provides functions to heal strings of text that have been broken into multiple lines. This is useful for working with data that originates from a structured source, such as a PDF or a web page.
+- The primary feature of this package is the `line_heal` module, which provides functions to reconstruct the original continuous text from a string that has been broken into multiple lines. This is done by choosing the most probable way to join lines or paragraphs, and remove hyphens if appropriate. The best fitting option is chosen based on the perplexity of the text, using a language model.
 - Parallel processing for processing multiple strings at once.
 - CPU and CUDA support.
 
@@ -32,11 +33,11 @@ pip install .
 ## Usage
 
 ### line_heal
-The `line_heal` module provides functions to heal strings of text that have been broken into multiple lines. This is useful for working with data that originates from a structured source, such as a PDF or a web page.
+The `line_heal` module provides functions to reconstruct the original continuous text from a string that has been broken into multiple lines. This is done by choosing the most probable way to join lines or paragraphs, and remove hyphens if appropriate. The best fitting option is chosen based on the perplexity of the text, using a language model.
 
 #### Functions
 ##### `parse`
-Heals a string of text and returns the healed string.
+`parse` is the main function of the `line_heal` module. It takes a string of text and returns the healed string.
 ```python
 def parse(string: str, verbose: bool = False, cuda: bool = True) -> str:
     """
@@ -73,8 +74,8 @@ The goal of this function is to heal the line in a way flows naturally and is ea
 
 ##### `parse_list`
 **Note**: This function uses large amounts of memory.
-
-Heals a list of strings of text and returns the healed list. Uses multiple processes to speed up the healing process. 
+`parse_list` is a function that takes a list of strings and returns a list of healed strings.
+Uses multiple processes to speed up the healing process. 
 ```python
 def parse_list(strings: List[str], verbose: bool = False, cuda: bool = True) -> List[str]:
     """
