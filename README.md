@@ -1,4 +1,6 @@
-# ![logo](URL) structml
+<img src="https://github.com/PocketDocLabs/structml/raw/main/assets/logo/logo_2x_scale.png" alt="StructML Logo">
+
+# structml
 A package for working with data using NLP and ML.
 
 
