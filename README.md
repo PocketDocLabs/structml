@@ -9,7 +9,7 @@ A package for working with data using NLP and ML.
 
 
 ## Features
-- The primary feature of this package is the `line_heal` module, which provides functions to reconstruct the original continuous text from a string that has been broken into multiple lines. This is done by choosing the most probable way to join lines or paragraphs, and remove hyphens if appropriate. The best fitting option is chosen based on the perplexity of the text, using a language model.
+- The primary feature of this package is the `line_heal` module, which provides functions to reconstruct the original continuous text from a string that has been broken into multiple lines.
 - Parallel processing for processing multiple strings at once.
 - CPU and CUDA support.
 
