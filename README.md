@@ -1,8 +1,8 @@
 [![structml Logo](https://github.com/PocketDocLabs/structml/blob/main/assets/logo/logo_2x_scale.png?raw=true)]()
 
-# structml
 [![PyPI](https://img.shields.io/pypi/v/structml.svg)](https://pypi.org/project/structml/) [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/structml.svg)](https://pypi.org/project/structml/) [![PyPI - Downloads](https://img.shields.io/pypi/dm/structml)](https://pypistats.org/packages/structml)
 
+# structml
 **Not ready for production use**
 
 A package for working with data using NLP and ML.
