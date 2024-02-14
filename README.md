@@ -1,6 +1,12 @@
 # structml
 A package for working with data using NLP and ML.
 
+## Features
+- The primary feature of this package is the `line_heal` module, which provides functions to heal strings of text that have been broken into multiple lines. This is useful for working with data that originates from a structured source, such as a PDF or a web page.
+- Parallel processing for processing multiple strings at once.
+- CPU and CUDA support.
+
+
 ## Installation
 **Requirements**: Python >=3.9 and Pytorch >=2.0.
 
