@@ -56,7 +56,7 @@ This line is broken into multiple lines as is common in data that originates fro
 
 The goal of this function is to heal the line in a way flows naturally and is easy to read.
 ```
-
+---
 ##### `parse_list`
 **Note**: This function uses large amounts of memory.
 Heals a list of strings of text and returns the healed list. Uses multiple processes to speed up the healing process. 
