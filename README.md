@@ -1,4 +1,5 @@
-<img src="https://github.com/PocketDocLabs/structml/raw/main/assets/logo/logo_2x_scale.png" alt="StructML Logo">
+[![structml Logo](https://github.com/PocketDocLabs/structml/blob/main/assets/logo/logo_2x_scale.png?raw=true)](https://github.com/PocketDocLabs/structml)
+
 
 # structml
 A package for working with data using NLP and ML.
