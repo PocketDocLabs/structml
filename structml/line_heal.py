@@ -1,10 +1,9 @@
 import re
 import torch
 import gc
-from rich.progress import track, Progress
 import os
+from rich.progress import track
 from multiprocessing import Pool, set_start_method
-
 from transformers import AutoModelForCausalLM, AutoTokenizer, logging
 
 # This module is used to fix text with excessive newlines and or ending dashes typical of books and fixed width text such as usenet posts.
@@ -18,7 +17,8 @@ default_model = "Dans-DiscountModels/Dans-StructureEvaluator-Small"
 # Length of fake token (used to estimate the length of the text in tokens)
 fake_token_length = 5
 
-vram_per_instance = 2
+ram_per_instance = 2.2
+
 
 def get_gpu_vram():
     # This function returns the available VRAM on the GPU in GB
@@ -35,14 +35,38 @@ def get_gpu_vram():
     # Return available VRAM in GB
     return available_vram / (1024 ** 3)
 
-def calculate_instances(vram_per_instance, safety_margin=0.9):
+
+def get_cpu_ram():
+    # This function returns the available RAM on the CPU in GB
+
+    # Get available RAM
+    available_ram = os.sysconf('SC_PAGE_SIZE') * os.sysconf('SC_PHYS_PAGES')
+
+    # Return available RAM in GB
+    return available_ram / (1024 ** 3)
+
+
+def calculate_instances_cuda(safety_margin=0.9):
     # This function calculates the maximum number of instances of a model that can be loaded onto the GPU based on the available VRAM, the VRAM required per instance, and a safety margin
 
     # Get available VRAM
     available_vram = get_gpu_vram()
 
     # Calculate maximum instances
-    max_instances = int((available_vram * safety_margin) / vram_per_instance)
+    max_instances = int((available_vram * safety_margin) / ram_per_instance)
+
+    # Return maximum instances
+    return max_instances
+
+
+def calculate_instances(safety_margin=0.9):
+    # This function calculates the maximum number of instances of a model that can be loaded onto the CPU based on the available RAM, the RAM required per instance, and a safety margin
+
+    # Get available RAM
+    available_ram = get_cpu_ram()
+
+    # Calculate maximum instances
+    max_instances = int((available_ram * safety_margin) / ram_per_instance)
 
     # Return maximum instances
     return max_instances
@@ -73,15 +97,6 @@ def load_model(model_name=default_model, cuda=True):
 
     # Return model and tokenizer
     return model, tokenizer
-
-
-def tokenize_text(text, tokenizer):
-    # This function tokenizes text using a given tokenizer and returns the tokenized text
-
-    # Tokenize text
-    tokenized_text = tokenizer.encode(text, return_tensors="pt")
-
-    return tokenized_text
 
 
 def check_perplexity(text, model, tokenizer):
@@ -214,9 +229,9 @@ def parse(text, verbose=False, cuda=True):
         for line in lines:
             fixed_text = evaluate_and_join_strings(fixed_text, line, model, tokenizer)
 
+    # Unload model and tokenizer
     del model, tokenizer
 
-    # Unload model and tokenizer
     if cuda:
         torch.cuda.empty_cache()
 
@@ -224,6 +239,7 @@ def parse(text, verbose=False, cuda=True):
 
     # Return fixed text
     return fixed_text
+
 
 def parse_with_model(text, model, tokenizer, verbose=False):
     # This function fixes text with excessive newlines and or ending dashes typical of books and fixed width text such as usenet posts
@@ -251,13 +267,17 @@ def parse_with_model(text, model, tokenizer, verbose=False):
     # Return fixed text
     return fixed_text
 
+
 def parse_list(texts, verbose=False, cuda=True):
     # This function fixes a list of texts with excessive newlines and or ending dashes typical of books and fixed width text such as usenet posts using multiple processess
 
-    max_instances = calculate_instances(vram_per_instance)
+    # Calculate maximum instances
+    max_instances = calculate_instances_cuda() if cuda else calculate_instances()
 
+    # Set start method to spawn (required for multiprocessing with CUDA)
     set_start_method('spawn', force=True)
 
+    # Create a pool of processes with a maximum number of instances
     with Pool(max_instances) as p:
         # For each text in the list, fix it with parse(text)
         if verbose:
