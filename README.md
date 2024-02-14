@@ -1,4 +1,4 @@
-# structml
+# ![logo](URL) structml
 A package for working with data using NLP and ML.
 
 
