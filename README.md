@@ -59,6 +59,7 @@ The goal of this function is to heal the line in a way flows naturally and is ea
 ---
 ##### `parse_list`
 **Note**: This function uses large amounts of memory.
+
 Heals a list of strings of text and returns the healed list. Uses multiple processes to speed up the healing process. 
 ```python
 def parse_list(strings: List[str], verbose: bool = False, cuda: bool = True) -> List[str]:
