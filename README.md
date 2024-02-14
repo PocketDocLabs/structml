@@ -114,8 +114,9 @@ Another goal of this function is to do so in a way that is efficient and scalabl
 
 
 ## Credits
-Thank you to [Sebastian Gabarain](https://huggingface.co/Locutusque) for [the model](https://huggingface.co/Locutusque/TinyMistral-248M-v2.5) that Dans-StructureEvaluator is based on.
-
+- Thank you to [Sebastian Gabarain](https://huggingface.co/Locutusque) for [the model](https://huggingface.co/Locutusque/TinyMistral-248M-v2.5) that Dans-StructureEvaluator is based on.
+- This project was largely inspired by [this project](https://github.com/pd3f/dehyphen) from which the method for healing lines was adapted.
+- The training for this project would not have been possible without [Axolotl](https://github.com/OpenAccess-AI-Collective/axolotl).
 
 ## Model pages
 - [Dans-StructureEvaluator](https://huggingface.co/Dans-DiscountModels/Dans-StructureEvaluator-Small), used in the `line_heal` module. Used to check the perplexity of the text with various joining strategies.
