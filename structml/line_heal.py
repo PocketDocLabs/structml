@@ -130,48 +130,50 @@ def split_text(text):
     return text
 
 
-def trim_string_end(string, trim_amount):
+def trim_string_end(string, trim_amount=500*fake_token_length):
     # This function trims the string to a given amount of characters from the end, to the closest space, and returns the result
 
-    # Trim string
-    string = string[:trim_amount]
+    # If the string is shorter than the trim amount, return the string
+    if len(string) <= trim_amount:
+        return string
+    else:
+        # Trim string
+        string = string[:trim_amount]
 
-    # Find the last space in the string
-    last_space = string.rfind(" ")
+        # Find the last space in the string
+        last_space = string.rfind(" ")
 
-    # If a space was found, trim the string to the last space
-    if last_space != -1:
-        string = string[:last_space]
+        # If a space was found, trim the string to the last space
+        if last_space != -1:
+            string = string[:last_space]
 
-    # Return trimmed string
-    return string
+        # Return trimmed string
+        return string
 
 
-def trim_string_start(string, trim_amount):
+def trim_string_start(string, trim_amount=500*fake_token_length):
     # This function trims the string to a given amount of characters from the start, to the closest space, and returns the result
 
-    # Trim string
-    string = string[-trim_amount:]
+    # If the string is shorter than the trim amount, return the string
+    if len(string) <= trim_amount:
+        return string
+    else:
+        # Trim string
+        string = string[-trim_amount:]
 
-    # Find the first space in the string
-    first_space = string.find(" ")
+        # Find the first space in the string
+        first_space = string.find(" ")
 
-    # If a space was found, trim the string to the first space
-    if first_space != -1:
-        string = string[first_space + 1:]
+        # If a space was found, trim the string to the first space
+        if first_space != -1:
+            string = string[first_space + 1:]
 
-    # Return trimmed string
-    return string
+        # Return trimmed string
+        return string
 
 
 def evaluate_and_join_strings(string1, string2, model, tokenizer):
     # This function checks the perplexity of two strings joined with a list of joining strings, and returns the string with the lowest perplexity
-
-    # Trim string1 to 500 * fake_token_length characters
-    trimmed_string1 = trim_string_start(string1, 500 * fake_token_length)
-
-    # Trim string2 to 500 * fake_token_length characters
-    trimmed_string2 = trim_string_end(string2, 500 * fake_token_length)
 
     # List of joining strings
     joiners = [" ", "\n", "\n\n", ""]
@@ -181,6 +183,12 @@ def evaluate_and_join_strings(string1, string2, model, tokenizer):
         string1 = string1[:-1]
 
         joiners += ["-" + joiner for joiner in joiners]
+
+    # Trim string1
+    trimmed_string1 = trim_string_start(string1)
+
+    # Trim string2
+    trimmed_string2 = trim_string_end(string2)
 
     # Create a dictionary to strings, their joining strings, and their perplexities
     perplexities = []
@@ -201,6 +209,53 @@ def evaluate_and_join_strings(string1, string2, model, tokenizer):
 
     # Return the joined string with the lowest perplexity
     return string1 + perplexities[0][2] + string2
+
+
+def evaluate_and_join_strings_for_training(string1, string2):
+
+    # Load model and tokenizer
+    model, tokenizer = load_model()
+    # List of joining strings
+    joiners = [" ", "\n", "\n\n", ""]
+
+    # If string1 ends in a hyphen but not two hyphens, and string2 does not start with a hyphen, remove the hyphen from string1 and add a variant of each joiner with the hyphen prefixed to it to the list of joiners
+    if string1.endswith("-") and not string1.endswith("--") and not string2.startswith("-"):
+        string1 = string1[:-1]
+
+        joiners += ["-" + joiner for joiner in joiners]
+
+    # Trim string1
+    trimmed_string1 = trim_string_start(string1)
+
+    # Trim string2
+    trimmed_string2 = trim_string_end(string2)
+
+    # Create a dictionary to strings, their joining strings, and their perplexities
+    perplexities = []
+
+    # For each joining string
+    for joiner in joiners:
+        # Join strings
+        joined_string = trimmed_string1 + joiner + trimmed_string2
+
+        # Check perplexity of joined string
+        perplexity = check_perplexity(joined_string, model, tokenizer)
+
+        # Add joined string and perplexity to dictionary
+        perplexities.append((joined_string, perplexity, joiner))
+
+    # Sort perplexities by perplexity with the lowest perplexity first
+    perplexities.sort(key=lambda x: x[1])
+
+    # Unload model and tokenizer
+    del model, tokenizer
+
+    torch.cuda.empty_cache()
+
+    gc.collect()
+
+    # Return the joiner with the lowest perplexity + string2 and the second lowest perplexity + string2
+    return perplexities[0][2] + string2, perplexities[1][2] + string2, trimmed_string1, trimmed_string2
 
 
 def parse(text, verbose=False, cuda=True):
