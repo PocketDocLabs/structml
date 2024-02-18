@@ -14,6 +14,7 @@ logging.set_verbosity_error()
 # Default model:
 default_model = "Dans-DiscountModels/Dans-StructureEvaluator-Small"
 
+
 # Length of fake token (used to estimate the length of the text in tokens)
 fake_token_length = 5
 
